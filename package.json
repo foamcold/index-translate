@@ -1,0 +1,24 @@
+{
+  "name": "index-translate",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Index-Translate 通用文本翻译的 OpenAI 兼容 API + 复刻前端",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "node --watch server/index.ts",
+    "start": "node server/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.3",
+    "hono": "^4.13.12",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  }
+}

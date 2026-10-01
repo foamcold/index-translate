@@ -1,0 +1,32 @@
+services:
+  index-translate:
+    build:
+      context: .
+      args:
+        # 与 mise.toml 的 node 大版本保持一致
+        NODE_VERSION: "26"
+    image: index-translate:latest
+    container_name: index-translate
+    init: true
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    environment:
+      PORT: "8787"
+      HOST: "0.0.0.0"
+      # 配置持久化到挂载卷
+      CONFIG_PATH: "/data/config.yaml"
+    volumes:
+      - ./data:/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8787/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <!-- 粉红到珊瑚橙平滑渐变 -->
+    <linearGradient id="appGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF5B7A" />
+      <stop offset="45%" stop-color="#FF6F77" />
+      <stop offset="100%" stop-color="#FFA163" />
+    </linearGradient>
+  </defs>
+
+  <!-- 图标本体：标准 128x128，圆角 28px（符合现代 App 黄金圆角比） -->
+  <rect width="128" height="128" rx="28" ry="28" fill="url(#appGradient)" />
+
+  <!-- 居中白色“译”字 -->
+  <text
+    x="64"
+    y="67"
+    fill="#FFFFFF"
+    font-size="70"
+    font-weight="bold"
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+    text-anchor="middle"
+    dominant-baseline="central">译</text>
+</svg>

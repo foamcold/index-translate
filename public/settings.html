@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Index-Translate · 系统设置</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="at-theme">
+<div class="at-aurora"><i></i><i></i><i></i></div>
+
+<nav class="atnav">
+  <a class="logo" href="/"><i>译</i><span>Index-<span class="lg-accent">Translate</span></span></a>
+  <div class="links">
+    <a href="/" data-en="Text">文本翻译</a>
+    <a href="/settings" class="on" data-en="Settings">系统设置</a>
+  </div>
+  <div class="at-lang">
+    <button class="at-lang-btn" data-setlang="zh">中文</button>
+    <button class="at-lang-btn" data-setlang="en">EN</button>
+  </div>
+</nav>
+
+<header class="phero">
+  <div class="pe">INDEX-TRANSLATE · <span data-en="SYSTEM SETTINGS">系统设置</span></div>
+  <h1 data-en="Configure the service.">配置你的翻译服务。</h1>
+  <p class="ps" data-en="Settings are persisted to config.yaml on the server and apply to the translation page and every OpenAI-compatible client.">所有设置持久化到服务端 config.yaml，同时作用于翻译页与所有 OpenAI 兼容客户端。</p>
+</header>
+
+<div class="wrap">
+  <!-- 设置页登录验证 -->
+  <div class="atcard login-card" id="loginCard" hidden>
+    <div class="login-lock">🔒</div>
+    <h2 data-en="Settings login">系统设置登录</h2>
+    <p class="login-sub" data-en="Enter the settings key to continue.">请输入设置页秘钥以继续。</p>
+    <div class="field">
+      <label for="loginKey" data-en="Settings key">设置页秘钥</label>
+      <input id="loginKey" type="password" placeholder="默认 admin" data-en-ph="Default: admin" autocomplete="current-password">
+    </div>
+    <div class="login-actions">
+      <button class="atbtn" id="loginBtn" data-en="Enter">进入设置</button>
+    </div>
+    <div class="it-status" id="loginStatus"></div>
+  </div>
+
+  <!-- 设置内容 -->
+  <div class="atcard settings" id="settingsCard" hidden>
+    <div class="section">
+      <h2 data-en="API Key authentication">API Key 鉴权</h2>
+      <div class="switch-row">
+        <label class="switch">
+          <input type="checkbox" id="authEnabled">
+          <span class="slider"></span>
+        </label>
+        <span class="switch-label" data-en="Require API Key for /v1/* endpoints">要求访问 /v1/* 接口时携带 API Key</span>
+      </div>
+      <div class="field" id="keysField">
+        <label data-en="API Keys">API Key 列表</label>
+        <div id="keys" class="keys"></div>
+        <div class="key-actions">
+          <button type="button" class="atbtn-ghost" id="addKey" data-en="Add key">添加 Key</button>
+          <button type="button" class="atbtn-ghost" id="generateKey" data-en="Generate">生成</button>
+        </div>
+        <span class="hint" data-en="Sent as an Authorization: Bearer header. Auto-generated when authentication is enabled and the list is empty.">以 Authorization: Bearer 请求头发送。开启鉴权且列表为空时会自动生成。</span>
+      </div>
+      <div class="field">
+        <label for="settingsKey" data-en="Settings page key">设置页秘钥</label>
+        <input id="settingsKey" type="text" placeholder="admin" autocomplete="off">
+        <span class="hint" data-en="Required to open this settings page. Default: admin. Leave empty to disable the gate.">访问本设置页所需的秘钥，默认 admin；留空则关闭设置页鉴权。</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 data-en="Defaults">默认偏好</h2>
+      <div class="grid2">
+        <div class="field">
+          <label for="defaultModel" data-en="Default model">默认模型</label>
+          <select id="defaultModel"></select>
+        </div>
+        <div class="field">
+          <label for="defaultSrcLang" data-en="Default source language">默认源语言</label>
+          <select id="defaultSrcLang"></select>
+        </div>
+        <div class="field">
+          <label for="defaultTgtLang" data-en="Default target language">默认目标语言</label>
+          <select id="defaultTgtLang"></select>
+        </div>
+      </div>
+      <span class="hint" data-en="MT models always receive source_lang / target_lang; these are used when the client omits them.">MT 模型始终携带 source_lang / target_lang，客户端未传时使用这里的默认值。</span>
+    </div>
+
+    <div class="section">
+      <h2 data-en="Upstream &amp; server">上游与服务</h2>
+      <div class="grid2">
+        <div class="field">
+          <label for="upstreamBase" data-en="Upstream base URL">上游服务地址</label>
+          <input id="upstreamBase" type="url" placeholder="https://index-translate.bilibili.com">
+        </div>
+        <div class="field">
+          <label data-en="Server">服务</label>
+          <input id="serverInfo" type="text" readonly>
+        </div>
+      </div>
+      <span class="hint">
+        <span data-en="Config file:">配置文件：</span><span class="code-inline" id="configPath">config.yaml</span>
+      </span>
+    </div>
+
+    <div class="section">
+      <h2 data-en="OpenAI-compatible usage">OpenAI 兼容调用</h2>
+      <div class="field">
+        <span class="hint" data-en="MT models accept source_lang / target_lang; chat models ignore them.">MT 模型接受 source_lang / target_lang；Chat 模型会忽略它们。</span>
+        <pre class="code-block">curl http://localhost:8787/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $API_KEY" \
+  -d '{
+    "model": "index-mt-9b",
+    "source_lang": "auto",
+    "target_lang": "zh",
+    "messages": [{"role": "user", "content": "Hello, world"}],
+    "stream": true
+  }'</pre>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="atbtn" id="saveBtn" data-en="Save">保存</button>
+      <button class="atbtn-ghost" id="testBtn" data-en="Test connection">测试连接</button>
+      <button class="atbtn-ghost" id="resetBtn" data-en="Reset">恢复默认</button>
+    </div>
+    <div class="it-status" id="it-status"></div>
+  </div>
+</div>
+
+<footer class="atfooter">
+  <span data-en="Index-Translate · OpenAI-compatible API">Index-Translate · OpenAI 兼容 API</span>
+</footer>
+
+<script src="/js/i18n.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/langs.js"></script>
+<script src="/js/settings.js"></script>
+</body>
+</html>

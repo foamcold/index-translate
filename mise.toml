@@ -1,0 +1,37 @@
+# mise 管理运行时与任务
+# 安装: mise install && mise run setup
+[tools]
+node = "26.10.0"
+pnpm = "12.6.0"
+
+[tasks.setup]
+description = "安装依赖"
+run = "pnpm install"
+
+[tasks.dev]
+description = "开发模式(热重载)"
+run = "node --watch server/index.ts"
+
+[tasks.start]
+description = "生产启动"
+run = "node server/index.ts"
+
+[tasks.typecheck]
+description = "TypeScript 类型检查"
+run = "pnpm typecheck"
+
+[tasks.docker-build]
+description = "构建 Docker 镜像"
+run = "docker build -t index-translate:latest ."
+
+[tasks.docker-up]
+description = "构建并启动 Docker Compose"
+run = "docker compose up -d --build"
+
+[tasks.docker-down]
+description = "停止 Docker Compose"
+run = "docker compose down"
+
+[tasks.docker-logs]
+description = "查看 Docker Compose 日志"
+run = "docker compose logs -f"

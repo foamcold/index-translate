@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Index-Translate · 通用文本翻译</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="at-theme">
+<div class="at-aurora"><i></i><i></i><i></i></div>
+<div class="at-glyphs" id="glyphs"></div>
+
+<nav class="atnav">
+  <a class="logo" href="/"><i>译</i><span>Index-<span class="lg-accent">Translate</span></span></a>
+  <div class="links">
+    <a href="/" class="on" data-en="Text">文本翻译</a>
+    <a href="/settings" data-en="Settings">系统设置</a>
+  </div>
+  <div class="at-lang">
+    <button class="at-lang-btn" data-setlang="zh">中文</button>
+    <button class="at-lang-btn" data-setlang="en">EN</button>
+  </div>
+</nav>
+
+<header class="phero">
+  <div class="pe">INDEX-TRANSLATE · <span data-en="GENERAL TEXT TRANSLATION">通用文本翻译</span></div>
+  <h1 data-en="Say what you mean, keep how it feels.">把意思说清，把语气留下。</h1>
+  <p class="ps" data-en="Daily chat, professional writing, or that one untranslatable meme. Tell us your requirements — the translation stays closer to what you meant.">日常交流、专业表达，或一句难翻的梗。告诉我们你的要求，让译文更贴近你想说的话。</p>
+</header>
+
+<div class="wrap">
+  <div class="atcard card">
+    <div class="row1" id="row1">
+      <div class="seg" id="modelSeg" role="group" aria-label="model"></div>
+      <select id="model" hidden></select>
+      <div class="langs">
+        <select id="srcLang"></select>
+        <button class="swap" id="swapBtn" title="交换语种" data-en-title="Swap languages">⇄</button>
+        <select id="tgtLang"></select>
+        <button class="langmore" id="moreLang" title="展开/收起小语种" data-en-title="Show/hide more languages"></button>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-head" id="instructHead">
+        <span><span data-en="Translate your way">按你的要求翻译</span><span class="caret" id="instructCaret">▴</span></span>
+        <span class="by" id="instructBy" data-en="served by Index-Translate-9B">由 Index-Translate-9B 提供</span>
+      </div>
+      <div class="req-body" id="instructBody">
+        <textarea id="instruct" rows="2" placeholder="例如：保留原文的 Markdown 格式，用自然、轻松的语气表达。" data-en-ph="e.g. Keep the original Markdown formatting and use a natural, relaxed tone."></textarea>
+        <div class="case-presets">
+          <div class="case-row">
+            <span class="case-tag" data-en="📌 Instruction:">📌 指令遵循</span>
+            <div class="chips" id="chips-inst"></div>
+          </div>
+          <div class="case-row">
+            <span class="case-tag meme-tag" data-en="🔥 Meme:">🔥 梗翻译</span>
+            <div class="chips" id="chips-meme"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panes">
+      <div class="pane">
+        <div class="pane-head"><span data-en="Source">原文</span><span class="lang" id="srcLab">自动检测</span></div>
+        <textarea id="src" placeholder="输入需要翻译的文字" maxlength="8000" data-en-ph="Enter the text to translate"></textarea>
+        <div class="pane-foot"><button class="mini" id="pasteBtn" data-en="📋 Paste text">📋 粘贴文本</button><span id="charCount">0 / 8,000</span></div>
+      </div>
+      <div class="pane">
+        <div class="pane-head"><span data-en="Translation">译文</span><span class="lang" id="tgtLab">中文</span></div>
+        <div class="output empty" id="out">译文将在这里呈现</div>
+        <div class="pane-foot"><span id="status">等待输入</span><button class="mini" id="copyBtn" data-en="⧉ Copy">⧉ 复制译文</button></div>
+      </div>
+    </div>
+
+    <div class="row3">
+      <span class="tip" data-en="The instruction field is optional — leave it empty for plain translation.">翻译要求可留空，直接开始普通翻译。</span>
+      <div class="btns">
+        <button class="atbtn-ghost" id="clear" data-en="Clear">清空</button>
+        <button class="atbtn" id="go"><span data-en="Translate">开始翻译</span> ↗</button>
+      </div>
+    </div>
+    <div class="meta" id="meta"></div>
+  </div>
+
+  <p class="slogan" data-en="Machine translation knows no bounds. Every expression deserves to be taken seriously.">机器翻译不是区。每一句表达，都值得被认真对待。</p>
+</div>
+
+<footer class="atfooter">
+  <span data-en="Index-Translate · Machine translation knows no bounds">Index-Translate · 机器翻译不是区</span>
+</footer>
+
+<script src="/js/i18n.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/langs.js"></script>
+<script src="/js/translate.js"></script>
+<script>
+  (function () {
+    var glyphs = ["译", "A", "文", "あ", "Z", "汉", "B", "語", "K", "译", "Q", "文"];
+    var host = document.getElementById("glyphs");
+    glyphs.forEach(function (ch, i) {
+      var span = document.createElement("span");
+      span.textContent = ch;
+      span.style.left = (5 + (i * 8.2) % 90) + "vw";
+      span.style.top = (8 + (i * 17) % 78) + "vh";
+      span.style.fontSize = (18 + (i % 4) * 10) + "px";
+      span.style.animationDelay = (-i * 1.5) + "s";
+      host.appendChild(span);
+    });
+  })();
+</script>
+</body>
+</html>
